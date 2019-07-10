@@ -43,3 +43,9 @@ allSpells = [
     Spell('Swap Ball', SpellTypes.Travel),
     Spell('Side Step', SpellTypes.Travel)
 ]
+
+offensiveSpells = allSpells[0:9]
+defensiveSpells = allSpells[9:17]
+areaSpells = allSpells[17:22]
+utilitySpells = allSpells[22:27]
+travelSpells = allSpells[27:]

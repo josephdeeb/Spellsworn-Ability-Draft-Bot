@@ -1,5 +1,6 @@
 import discord
 import spellData
+import random
 from enum import Enum
 
 client = discord.Client()
@@ -28,25 +29,37 @@ Two major ways to do the drafts:
         C) Packs can contain multiples of any spells
 
     For the time being I'm going to assume 2) B)
+
+PACK COMPOSITION
+    2) B) composition
+        1x Offensive 1x Travel 3x Random Spells (no repeats in pack)
 """
 class DraftGroup:
     defaultSpellSlots = []
 
-    def __init__(self, id, players):
+    def __init__(self, id, players, packSize=10):
         # Identifier of the draft group
         self.id = id
         # All discord.members in the draft group
         self.players = players
+        # Size of packs
+        if packSize <= 1:
+            raise ValueError
+        self.packSize = packSize
         # All the packs being passed around
         self.packs = []
 
     # Initialize all the packs for each player
-    def initializePacks(self, spellSlots):
-
+    def initializePacks(self):
         # For each player
-        for i in range(len(self.players)):
-
-
+        for i in range(0, len(self.players)):
+            # Set first two packs to one offensive spell and one travel spell
+            pack[0] = random.choice(spellData.offensiveSpells)
+            pack[1] = random.choice(spellData.travelSpells)
+            # For each remaining slot in the pack
+            for j in range(packSize-2, packSize):
+                # Fill the slot with a random spell, no repeats
+                pack[j] = random.choice(spellData.allSpells)
 
 # Dictionary that contains all users who have either sent or been mentioned in a draft command.
 # userID:(playingStatus(bool), DraftGroupID)
