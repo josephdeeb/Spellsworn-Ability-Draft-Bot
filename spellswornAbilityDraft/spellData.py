@@ -7,6 +7,9 @@ class Spell:
         self.name = name
         self.type = type
 
+    def __str__(self):
+        return self.name
+
 allSpells = [
     Spell('Bouncer', SpellTypes.Offensive),
     Spell('Chakram', SpellTypes.Offensive),
