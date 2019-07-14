@@ -68,7 +68,7 @@ class DraftGroup:
         # All the packs being passed around
         self.packs = []
         # The channel from which the start draft command was issued
-        self.initialChannel
+        self.initialChannel = channel
 
     # Takes a list of members / users and converts them into DraftMembers then adds them to self.players
     async def addPlayers(self, users):
@@ -214,15 +214,22 @@ async def on_message(message):
                         await message.channel.send('Your selection is: {}'.format(group.packs[member.pack][selection-1].name))
                         # Now check to see if all players have picked their cards.  If so, we're ready to pass the packs
                         if await group.checkReady():
-                            # If there's no cards left in our pack then this pack is done
-                            """
-                            LEFT OFF HERE
-                            """
-                            if len(group.packs[member.pack]) == 0:
+                            # If there's only one card left in our pack then this pack is done
+                            if len(group.packs[member.pack]) == 1:
+                                await group.passPacks()
                                 finalMessage = ''
+                                for drafter in group.players:
+                                    finalMessage += '\n{}\'s spells: '.format(drafter.player.mention)
+                                    for spell in drafter.pool:
+                                        finalMessage += '{}, '.format(spell.name)
 
-                            await group.passPacks()
-                            await group.displayPacks()
+                                    finalMessage += '\n'
+
+                                await group.initialChannel.send(finalMessage)
+
+                            else:
+                                await group.passPacks()
+                                await group.displayPacks()
 
             else:
                 await message.channel.send('You are not currently in a draft.')
