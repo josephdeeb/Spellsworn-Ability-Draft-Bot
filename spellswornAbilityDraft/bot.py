@@ -56,7 +56,7 @@ PACK COMPOSITION
 class DraftGroup:
     defaultSpellSlots = []
 
-    def __init__(self, id, players=[], packSize=10):
+    def __init__(self, id, channel, players=[], packSize=10):
         # Identifier of the draft group
         self.id = id
         # List of all DraftMembers in the draft group
@@ -67,6 +67,8 @@ class DraftGroup:
         self.packSize = packSize
         # All the packs being passed around
         self.packs = []
+        # The channel from which the start draft command was issued
+        self.initialChannel
 
     # Takes a list of members / users and converts them into DraftMembers then adds them to self.players
     async def addPlayers(self, users):
@@ -117,7 +119,8 @@ class DraftGroup:
     # Retrieves a DraftMember given their id
     async def getDraftMember(self, id):
         for player in self.players:
-            if player.getID() == id:
+            playerID = await player.getID()
+            if playerID == id:
                 return player
 
         return False
@@ -172,7 +175,7 @@ async def on_message(message):
 
                     # Create the actual DraftGroup
                     global drafts
-                    group = DraftGroup(drafts)
+                    group = DraftGroup(drafts, message.channel)
                     await group.addPlayers(users)
                     global draftGroups
                     draftGroups[group.id] = group
@@ -202,15 +205,22 @@ async def on_message(message):
                     # Retrieve the DraftMember
                     member = await group.getDraftMember(message.author.id)
                     # Ensure the input is within the range of acceptable values given the size of the pack
-                    if selection < 1 or selection > group.packs[member.pack].size():
+                    if selection < 1 or selection > len(group.packs[member.pack]):
                         await message.channel.send('That selection does not exist, please try again.')
                     # That selection does exist, so time to set that to the player's pick and set the picked flag
                     else:
-                        member.pick = selection
+                        member.pick = selection - 1
                         member.picked = True
-                        await message.channel.send('Your selection is: {}'.format(group.packs[member.pack][selection].name))
+                        await message.channel.send('Your selection is: {}'.format(group.packs[member.pack][selection-1].name))
                         # Now check to see if all players have picked their cards.  If so, we're ready to pass the packs
                         if await group.checkReady():
+                            # If there's no cards left in our pack then this pack is done
+                            """
+                            LEFT OFF HERE
+                            """
+                            if len(group.packs[member.pack]) == 0:
+                                finalMessage = ''
+
                             await group.passPacks()
                             await group.displayPacks()
 
