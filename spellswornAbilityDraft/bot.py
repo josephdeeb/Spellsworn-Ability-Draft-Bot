@@ -56,7 +56,7 @@ PACK COMPOSITION
 class DraftGroup:
     defaultSpellSlots = []
 
-    def __init__(self, id, channel, players=[], packSize=10):
+    def __init__(self, id, channel, players=[], packSize=8):
         # Identifier of the draft group
         self.id = id
         # List of all DraftMembers in the draft group
