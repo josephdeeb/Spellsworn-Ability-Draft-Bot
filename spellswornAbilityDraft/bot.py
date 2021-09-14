@@ -237,4 +237,4 @@ async def on_message(message):
         else:
             await message.channel.send('You are not currently in a draft.')
 
-client.run('NTkzMjkzMjExNjI0MDEzODI0.XSeuDg.TktAkenU51Fh7RwLKhLKiAZIZQA')
+#client.run(INSERT TOKEN STRING HERE)
